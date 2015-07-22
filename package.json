@@ -1,0 +1,16 @@
+{
+  "name": "mugtalk",
+  "version": "0.1.0",
+  "description": "Real-Time text chat app. Just Talk. Built with Socket.io and WebRTC.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/mjlescano/mugtalk.git"
+  },
+  "author": "mjlescano",
+  "license": "MIT",
+  "homepage": "https://bitbucket.org/mjlescano/mugtalk#readme"
+}
