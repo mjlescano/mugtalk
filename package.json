@@ -1,10 +1,11 @@
 {
   "name": "mugtalk",
   "version": "0.1.0",
-  "description": "Real-Time text chat app. Just Talk. Built with Socket.io and WebRTC.",
+  "description": "Real-Time text chat app. Talk using Socket.io and WebRTC.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nvm use && node index.js",
   },
   "repository": {
     "type": "git",
@@ -12,5 +13,8 @@
   },
   "author": "mjlescano",
   "license": "MIT",
-  "homepage": "https://bitbucket.org/mjlescano/mugtalk#readme"
+  "homepage": "https://bitbucket.org/mjlescano/mugtalk#readme",
+  "dependencies": {
+    "koa": "^0.21.0"
+  }
 }
