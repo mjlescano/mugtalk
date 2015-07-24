@@ -3,6 +3,7 @@ import path from 'path'
 import stylus from 'stylus'
 import nib from 'nib'
 import Router from 'koa-router'
+import { onProduction, onDevelopment } from '../env'
 
 const app = new Router()
 
@@ -20,13 +21,15 @@ app.get(`/${dest}`, function *(){
 
 function parseStylus(str, filename) {
   return new Promise(function(accept, reject){
-    stylus(str)
-      .set('filename', filename)
-      .use(nib)
-      .render(function(err, css) {
-        if (err) reject(err)
-        accept(css)
-      })
+    let css = stylus(str).set('filename', filename).use(nib)
+
+    if (onProduction) css.set('compress', true)
+    if (onDevelopment) css.set('sourcemap', { inline: true })
+
+    css.render(function(err, css) {
+      if (err) reject(err)
+      accept(css)
+    })
   })
 }
 

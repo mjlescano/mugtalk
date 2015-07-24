@@ -1,5 +1,7 @@
-import app from './server'
+import server from './server'
 
-app.listen(3000, function(){
-  console.log(' · 3000 · ')
+const port = 3000
+
+server.listen(3000, () => {
+  console.log(` · ${port} · `)
 })

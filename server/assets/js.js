@@ -1,9 +1,11 @@
+import Router from 'koa-router'
 import wreq from 'koa-watchify'
 import browserify from 'browserify'
 import watchify from 'watchify'
-import babelify from 'babelify'
 import path from 'path'
-import { onDevelopment } from '../env'
+import { onProduction, onDevelopment } from '../env'
+
+const app = new Router()
 
 const src = path.resolve(__dirname, '../../client/js/index.js')
 const dest = 'app.js'
@@ -12,10 +14,12 @@ let bundle = browserify({
   debug: onDevelopment,
   entries: [src],
   outfile: dest,
-  detectGlobals: false,
   fullPaths: true
-}).transform(babelify)
+}).transform('babelify')
 
+if (onProduction) bundle.transform('uglifyify')
 if (onDevelopment) bundle = watchify(bundle)
 
-export default wreq(bundle)
+app.get(`/${dest}`, wreq(bundle))
+
+export default app.middleware()
