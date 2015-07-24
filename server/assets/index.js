@@ -1,6 +1,6 @@
-const compose = require('koa-compose')
+import compose from 'koa-compose'
 
-module.exports = compose([
+export default compose([
   require('./views'),
   require('./styles'),
   require('./js')

@@ -1,1 +1,2 @@
-console.log('hola!4')
+let hola = () => 'hola!2'
+console.log(hola())

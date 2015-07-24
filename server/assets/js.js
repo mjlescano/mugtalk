@@ -1,21 +1,21 @@
-const wreq = require('koa-watchify')
-const browserify = require('browserify')
-const watchify = require('watchify')
-const path = require('path')
+import wreq from 'koa-watchify'
+import browserify from 'browserify'
+import watchify from 'watchify'
+import babelify from 'babelify'
+import path from 'path'
+import { onDevelopment } from '../env'
 
 const src = path.resolve(__dirname, '../../client/js/index.js')
 const dest = 'app.js'
 
-var bundle = browserify({
+let bundle = browserify({
+  debug: onDevelopment,
   entries: [src],
   outfile: dest,
-  fullPaths: true,
-  packageCache: {},
-  cache: {}
-})
+  detectGlobals: false,
+  fullPaths: true
+}).transform(babelify)
 
-if ('development' == process.env.NODE_ENV) {
-  bundle = watchify(bundle)
-}
+if (onDevelopment) bundle = watchify(bundle)
 
-module.exports = wreq(bundle)
+export default wreq(bundle)

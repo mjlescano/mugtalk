@@ -1,6 +1,6 @@
-const path = require('path')
-const Router = require('koa-router')
-const views = require('koa-render')
+import path from 'path'
+import Router from 'koa-router'
+import views from 'koa-render'
 
 const app = new Router()
 
@@ -10,4 +10,4 @@ app.get('/', function *(){
   this.body = yield this.render('index')
 })
 
-module.exports = app.middleware()
+export default app.middleware()

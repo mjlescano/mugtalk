@@ -1,8 +1,8 @@
-const readFile = require('fs-readfile-promise')
-const path = require('path')
-const stylus = require('stylus')
-const nib = require('nib')
-const Router = require('koa-router')
+import readFile from 'fs-readfile-promise'
+import path from 'path'
+import stylus from 'stylus'
+import nib from 'nib'
+import Router from 'koa-router'
 
 const app = new Router()
 
@@ -12,13 +12,13 @@ const dest = 'app.css'
 app.get(`/${dest}`, function *(){
   this.type = 'text/css'
 
-  var str = yield readFile(src)
-  var css = yield parse(str.toString(), src)
+  let str = yield readFile(src)
+  let css = yield parseStylus(str.toString(), src)
 
   this.body = css
 })
 
-function parse(str, filename) {
+function parseStylus(str, filename) {
   return new Promise(function(accept, reject){
     stylus(str)
       .set('filename', filename)
@@ -30,4 +30,4 @@ function parse(str, filename) {
   })
 }
 
-module.exports = app.middleware()
+export default app.middleware()

@@ -1,7 +1,11 @@
-const app = require('koa')()
-const server = require('http').createServer(app.callback())
-const io = require('socket.io')(server)
-const p2p = require('socket.io-p2p-server').Server
+import koa from 'koa'
+import http from 'http'
+import socket from 'socket.io'
+import { Server as p2p } from 'socket.io-p2p-server'
+
+const app = koa()
+const server = http.createServer(app.callback())
+const io = socket(server)
 
 io.use(p2p)
 
@@ -20,4 +24,4 @@ app.use(require('./assets'))
 //   })
 // })
 
-module.exports = app
+export default app
