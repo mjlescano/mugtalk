@@ -5,7 +5,7 @@ import { Server as P2PServer } from 'socket.io-p2p-server'
 
 export const app = koa()
 export const server = new HttpServer(app.callback())
-export const io = new SocketIO(server, { serveClient: false })
+export const io = SocketIO(server, { serveClient: false })
 
 io.use(P2PServer)
 

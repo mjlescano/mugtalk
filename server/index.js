@@ -1,6 +1,6 @@
 import { app, server } from './app'
-import assets from './assets'
+import client from './client'
 
-app.use(assets)
+app.use(client)
 
 export default server

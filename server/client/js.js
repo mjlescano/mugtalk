@@ -2,12 +2,12 @@ import Router from 'koa-router'
 import wreq from 'koa-watchify'
 import browserify from 'browserify'
 import watchify from 'watchify'
-import path from 'path'
+import { resolve } from 'path'
 import { onProduction, onDevelopment } from '../env'
 
-const app = new Router()
+const router = new Router()
 
-const src = path.resolve(__dirname, '../../client/js/index.js')
+const src = resolve(__dirname, '../../client/js/index.js')
 const dest = 'app.js'
 
 let bundle = browserify({
@@ -20,6 +20,6 @@ let bundle = browserify({
 if (onProduction) bundle.transform('uglifyify')
 if (onDevelopment) bundle = watchify(bundle)
 
-app.get(`/${dest}`, wreq(bundle))
+router.get(`/${dest}`, wreq(bundle))
 
-export default app.middleware()
+export default router.routes()
