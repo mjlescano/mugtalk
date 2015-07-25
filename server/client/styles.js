@@ -1,4 +1,4 @@
-import readFile from 'fs-readfile-promise'
+import { readFile } from 'mz/fs'
 import { resolve } from 'path'
 import stylus from 'stylus'
 import nib from 'nib'
@@ -13,10 +13,10 @@ const dest = 'app.css'
 router.get(`/${dest}`, function *(){
   this.type = 'text/css'
 
-  let str = yield readFile(src).toString()
-  let css = yield parseStylus(str, src)
+  let str = yield readFile(src)
+  let css = yield parseStylus(str.toString(), src)
 
-  this.body = yield css
+  this.body = css
 })
 
 function parseStylus(str, filename) {
