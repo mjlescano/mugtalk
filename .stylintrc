@@ -1,7 +1,7 @@
 {
     "blocks": "never",
     "brackets": "never",
-    "colons": "always",
+    "colons": false,
     "colors": false,
     "commaSpace": "always",
     "commentSpace": "always",

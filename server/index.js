@@ -1,8 +1,6 @@
 import { createServer } from 'http'
-import { app, io } from './app'
-import client from './client'
-
-app.use(client)
+import app from './app'
+import io from './io'
 
 const server = createServer(app.callback())
 io.attach(server, { serveClient: false })
