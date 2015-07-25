@@ -1,7 +1,8 @@
-import server from './server'
+require('babel/register')({ extensions: ['.js'] })
 
-const port = 3000
+var server = require('./server')
+var port = 3000
 
-server.listen(3000, () => {
-  console.log(` · ${port} · `)
+server.listen(port, function(){
+  console.log(' · ' + port + ' · ')
 })

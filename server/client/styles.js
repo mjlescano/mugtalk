@@ -16,7 +16,7 @@ router.get(`/${dest}`, function *(){
   let str = yield readFile(src).toString()
   let css = yield parseStylus(str, src)
 
-  this.body = css
+  this.body = yield css
 })
 
 function parseStylus(str, filename) {

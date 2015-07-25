@@ -1,11 +1,12 @@
 import koa from 'koa'
-import SocketIO from 'socket.io'
-import { Server as HttpServer } from 'http'
+import socketIO from 'socket.io'
 import { Server as P2PServer } from 'socket.io-p2p-server'
 
 export const app = koa()
-export const server = new HttpServer(app.callback())
-export const io = SocketIO(server, { serveClient: false })
+export const io = socketIO()
+export default app
+
+app.io = io
 
 io.use(P2PServer)
 
@@ -19,4 +20,3 @@ io.on('connection', function(socket) {
   })
 })
 
-export default app
