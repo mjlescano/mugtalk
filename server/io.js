@@ -7,23 +7,19 @@ const io = socketIO()
 
 io.use(P2PServer)
 
-io.on('connect', function (socket){
-  console.log('+ ', socket.id)
-
-  socket.on('disconnect', function (){
-    console.log('- ', socket.id)
-  })
-
-  socket.on('unauthorized', function (){
-    console.log('✗ ', socket.id, arguments)
-  })
-
-  socket.on('authenticated', function (){
-    console.log('✓ ', socket.id, arguments)
-  })
-}).on('connection', socketioJwt.authorize({
+io.on('connection', socketioJwt.authorize({
   secret: jwtSecret,
-  timeout: 1000 * 15
-}))
+  timeout: 3 * 1000
+})).on('connection', function (socket){
+  const id = socket.id
+  console.log('+ ', id)
+  socket.on('disconnect', function (socket){
+    console.log('- ', id)
+  })
+}).on('unauthorized', function (socket){
+  console.log('✗ ', socket.id, socket.decoded_token)
+}).on('authenticated', function (socket){
+  console.log('✓ ', socket.id, socket.decoded_token)
+})
 
 export default io

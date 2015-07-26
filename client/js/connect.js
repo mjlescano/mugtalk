@@ -1,6 +1,12 @@
 import io from 'socket.io-client'
 
-const socket = io()
+const socket = io(undefined, {
+  reconnection: false
+})
+
+window.onbeforeunload = function (){
+  socket.disconnect()
+}
 
 function connect() {
   let promise
@@ -60,6 +66,8 @@ function parseJSON(res) {
 socket.on('connect', function () {
   console.log('+ ', socket.id)
 })
+
+socket.on('connect_error', console.error.bind(console))
 
 socket.on('disconnect', function () {
   console.log('- ', socket.id)
