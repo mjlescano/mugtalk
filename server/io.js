@@ -1,8 +1,11 @@
+import debug from 'debug'
 import socketIO from 'socket.io'
 import socketioJwt from 'socketio-jwt'
 import { Server as P2PServer } from 'socket.io-p2p-server'
 import { jwtSecret } from './env'
+import User from './user'
 
+const log = debug('mugtalk:io')
 const io = socketIO()
 
 io.use(P2PServer)
@@ -11,15 +14,21 @@ io.on('connection', socketioJwt.authorize({
   secret: jwtSecret,
   timeout: 3 * 1000
 })).on('connection', function (socket){
-  const id = socket.id
-  console.log('+ ', id)
+  const socketId = socket.id
+  log('+', `Ϟ ${socketId}`)
   socket.on('disconnect', function (socket){
-    console.log('- ', id)
+    User.findBySocket(id).then(userId => {
+      log('-', `☺ ${userId}`, `Ϟ ${socketId}`)
+      User.removeSocket(userId, id)
+    })
   })
 }).on('unauthorized', function (socket){
-  console.log('✗ ', socket.id, socket.decoded_token)
+  const userId = socket.decoded_token.id
+  log('✗', `☺ ${userId}`, `Ϟ ${socket.id}`)
 }).on('authenticated', function (socket){
-  console.log('✓ ', socket.id, socket.decoded_token)
+  const userId = socket.decoded_token.id
+  log('✓', `☺ ${userId}`, `Ϟ ${socket.id}`)
+  User.addSocket(userId, socket.id)
 })
 
 export default io

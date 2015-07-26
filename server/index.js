@@ -1,3 +1,4 @@
+import './debug'
 import { createServer } from 'http'
 import app from './app'
 import io from './io'

@@ -1,4 +1,5 @@
 import io from 'socket.io-client'
+import User from './user'
 
 const socket = io(undefined, {
   reconnection: false
@@ -10,7 +11,7 @@ window.onbeforeunload = function (){
 
 function connect() {
   let promise
-  if (localStorage.getItem('userId')) {
+  if (User.get()) {
     promise = authenticate()
   } else {
     promise = signup().then(authenticate)
@@ -41,7 +42,7 @@ function signup () {
     method: 'post',
     headers: { 'Accept': 'application/json' }
   }).then(checkStatus).then(parseJSON).then(data => {
-    localStorage.setItem('userId', data.userId)
+    User.set(data.user)
     localStorage.setItem('token', data.token)
     return socket
   }).catch(err => {
@@ -78,11 +79,11 @@ socket.on('error', function () {
 })
 
 socket.on('unauthorized', function (err) {
-  console.log('✗ ', localStorage.getItem('userId'))
+  console.log('✗ ', User.get().id)
 })
 
 socket.on('authenticated', function () {
-  console.log('✓ ', localStorage.getItem('userId'))
+  console.log('✓ ', User.get().id)
 })
 
 socket.on('message', function (msg) {
