@@ -2,8 +2,7 @@ import Router from 'koa-router'
 import json from 'koa-json'
 import jwt from 'jwt-simple'
 import User from './user'
-import { jwtSecret } from './env'
-import { onProduction } from './env'
+import { jwtSecret, onProduction } from './env'
 
 const router = new Router()
 const respondJson = json({ pretty: !onProduction })

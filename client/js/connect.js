@@ -5,6 +5,8 @@ const socket = io(undefined, {
   reconnection: false
 })
 
+window.socket = socket
+
 window.onbeforeunload = function (){
   socket.disconnect()
 }
