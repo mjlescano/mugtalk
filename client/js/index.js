@@ -1,1 +1,3 @@
-import './socket'
+import socket from './socket'
+
+socket.on

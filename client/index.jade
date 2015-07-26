@@ -6,4 +6,7 @@ html
 
   body.loading
     p mugtalk.
-    script(src='app.js')
+
+    if !onDevelopment
+      script(src='https://cdn.polyfill.io/v1/polyfill.min.js')
+    script(src='app.js', async)

@@ -1,8 +1,8 @@
 import koa from 'koa'
-import client from './client'
 
 const app = koa()
 
-app.use(client)
+app.use(require('./jwt'))
+app.use(require('./client'))
 
 export default app
