@@ -1,3 +1,7 @@
-import socket from './socket'
+import connect from './connect'
 
-socket.on
+connect.then(socket => {
+  console.log('connected!')
+}).catch(err => {
+  alert('Coudlnt connect :(')
+})
