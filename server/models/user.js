@@ -2,7 +2,7 @@ import debug from 'debug'
 import redis from 'redis-js'
 import shortid from 'shortid'
 
-const log = debug('mugtalk:user')
+const log = debug('mugtalk:☺')
 const client = redis.createClient()
 
 function toHash(a){
@@ -18,7 +18,7 @@ export default {
     return new Promise((accept, reject) => {
       client.hmset(`user:${user.id}`, 'id', user.id, err => {
         if (err) return reject(err)
-        log(`+☺`, `☺ ${user.id}`)
+        log(`+`, `☺ ${user.id}`)
         accept(user)
       })
     })
@@ -50,7 +50,7 @@ export default {
       .sadd(`user:${userId}:sockets`, socketId)
       .exec(err => {
         if (err) throw err
-        log(`+Ϟ`, `☺ ${userId}`, `Ϟ ${socketId}`)
+        log(`← Ϟ`, `☺ ${userId}`, `Ϟ ${socketId}`)
       })
   },
 
@@ -60,7 +60,7 @@ export default {
       .srem(`user:${userId}:sockets`, socketId)
       .exec(err => {
         if (err) throw err
-        log(`-Ϟ`, `☺ ${userId}`, `Ϟ ${socketId}`)
+        log(`↚ Ϟ`, `☺ ${userId}`, `Ϟ ${socketId}`)
       })
   },
 
@@ -82,7 +82,5 @@ export default {
 
   isConnected (userId) {
     return !!client.scard(`user:${userId}:sockets`)
-  },
-
-
+  }
 }

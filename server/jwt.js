@@ -1,7 +1,7 @@
 import Router from 'koa-router'
 import json from 'koa-json'
 import jwt from 'jwt-simple'
-import User from './user'
+import { User } from './models'
 import { jwtSecret, onProduction } from './env'
 
 const router = new Router()

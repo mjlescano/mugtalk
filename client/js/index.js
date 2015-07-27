@@ -1,7 +1,4 @@
-import connect from './connect'
+import './connect'
+import join from './room'
 
-connect.then(socket => {
-  console.log('connected!')
-}).catch(err => {
-  alert('Coudln\'t connect :(\n\nTry later please.')
-})
+join('default')
