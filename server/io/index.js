@@ -10,29 +10,34 @@ const io = socketIO()
 
 io.use(P2PServer)
 
+io.use(socketioJwt.authorize({
+  secret: jwtSecret,
+  handshake: true
+}))
+
+io.use(function (socket, next){
+  const socketId = socket.id
+  const userId = socket.decoded_token.id
+
+  User.find(userId).then(user => {
+    if (user) next()
+    User.save(socket.decoded_token).then(() => next())
+  })
+})
+
 io.sockets
-  .on('connection', socketioJwt.authorize({
-    secret: jwtSecret,
-    timeout: 3 * 1000
-  }))
   .on('connection', function (socket){
     const socketId = socket.id
-    log('+', `Ϟ ${socketId}`)
+    const userId = socket.decoded_token.id
+
+    log('+Ϟ', `☺ ${userId}`, `Ϟ ${socketId}`)
+
+    User.addSocket(userId, socketId)
+
     socket.on('disconnect', function (socket){
-      User.findBySocket(id).then(userId => {
-        log('-', `☺ ${userId}`, `Ϟ ${socketId}`)
-        User.removeSocket(userId, id)
-      })
+      log('-Ϟ', `☺ ${userId}`, `Ϟ ${socketId}`)
+      User.removeSocket(userId, socketId)
     })
-  })
-  .on('unauthorized', function (socket){
-    const userId = socket.decoded_token.id
-    log('✗', `☺ ${userId}`, `Ϟ ${socket.id}`)
-  })
-  .on('authenticated', function (socket){
-    const userId = socket.decoded_token.id
-    log('✓', `☺ ${userId}`, `Ϟ ${socket.id}`)
-    User.addSocket(userId, socket.id)
   })
 
 io.use(require('./room'))

@@ -6,10 +6,29 @@ const log = debug('mugtalk:user')
 const client = redis.createClient()
 
 export default {
-  create () {
+  save (user) {
     return new Promise((accept, reject) => {
-      accept({
-        id: shortid.generate()
+      client.hmset(`user:${user.id}`, 'id', user.id, err => {
+        if (err) reject(err)
+        log(`+☺`, `☺ ${user.id}`)
+        accept(user)
+      })
+    })
+  },
+
+  create () {
+    const user = {
+      id: shortid.generate()
+    }
+    return this.save(user)
+  },
+
+  find (userId) {
+    return new Promise((accept, reject) => {
+      client.hgetall(`user:${userId}`, (err, user) => {
+        if (err) return reject(err)
+        if (Array.isArray(user) && !user.length) accept(null)
+        accept(user)
       })
     })
   },
@@ -20,7 +39,7 @@ export default {
       .sadd(`user:${userId}:sockets`, socketId)
       .exec(err => {
         if (err) throw err
-        log(`addSocket`, `☺ ${userId}`, `Ϟ ${socketId}`)
+        log(`+Ϟ`, `☺ ${userId}`, `Ϟ ${socketId}`)
       })
   },
 
@@ -30,7 +49,7 @@ export default {
       .srem(`user:${userId}:sockets`, socketId)
       .exec(err => {
         if (err) throw err
-        log(`removeSocket`, `☺ ${userId}`, `Ϟ ${socketId}`)
+        log(`-Ϟ`, `☺ ${userId}`, `Ϟ ${socketId}`)
       })
   },
 
@@ -39,7 +58,9 @@ export default {
       client.get(`socket:${socketId}:user`, (err, userId) => {
         if (err) return reject(err)
         if (!userId) return reject(new Error('User not found for socket ${socketId}'))
-        accept(userId)
+        accept({
+          id: userId
+        })
       })
     })
   },
