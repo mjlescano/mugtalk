@@ -3,5 +3,5 @@ import connect from './connect'
 connect.then(socket => {
   console.log('connected!')
 }).catch(err => {
-  alert('Coudlnt connect :(')
+  alert('Coudln\'t connect :(\n\nTry later please.')
 })

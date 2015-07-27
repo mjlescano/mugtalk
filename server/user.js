@@ -5,11 +5,19 @@ import shortid from 'shortid'
 const log = debug('mugtalk:user')
 const client = redis.createClient()
 
+function toHash(a){
+  let l = a.length
+  if (l % 2) throw new Error('Key-value pairs are not congruent.')
+  const hash = {}
+  for (let i = 0; i < l; i += 2) hash[a[i]] = a[i + 1]
+  return hash
+}
+
 export default {
   save (user) {
     return new Promise((accept, reject) => {
       client.hmset(`user:${user.id}`, 'id', user.id, err => {
-        if (err) reject(err)
+        if (err) return reject(err)
         log(`+☺`, `☺ ${user.id}`)
         accept(user)
       })
@@ -27,7 +35,10 @@ export default {
     return new Promise((accept, reject) => {
       client.hgetall(`user:${userId}`, (err, user) => {
         if (err) return reject(err)
-        if (Array.isArray(user) && !user.length) accept(null)
+        if (Array.isArray(user)) {
+          if (!user.length) return accept(null)
+          user = toHash(user)
+        }
         accept(user)
       })
     })
@@ -72,4 +83,6 @@ export default {
   isConnected (userId) {
     return !!client.scard(`user:${userId}:sockets`)
   },
+
+
 }

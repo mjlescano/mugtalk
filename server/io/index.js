@@ -20,7 +20,7 @@ io.use(function (socket, next){
   const userId = socket.decoded_token.id
 
   User.find(userId).then(user => {
-    if (user) next()
+    if (user) return next()
     User.save(socket.decoded_token).then(() => next())
   })
 })
@@ -34,10 +34,12 @@ io.sockets
 
     User.addSocket(userId, socketId)
 
-    socket.on('disconnect', function (socket){
-      log('-Ϟ', `☺ ${userId}`, `Ϟ ${socketId}`)
-      User.removeSocket(userId, socketId)
-    })
+    setTimeout(function(){
+      socket.on('disconnect', function (socket){
+        User.removeSocket(userId, socketId)
+        log('-Ϟ', `☺ ${userId}`, `Ϟ ${socketId}`)
+      })
+    }, 0)
   })
 
 io.use(require('./room'))
