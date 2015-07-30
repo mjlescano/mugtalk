@@ -80,7 +80,7 @@ export default function room(socket, next) {
     Promise.all(socketsIds.map(socketId => User.findBySocket(socketId)))
       .then(users => {
         users = unique(users, (a, b) => a.id === b.id)
-        socket.emit(`${room}:users`, users)
+        socket.emit(`room:users`, users, name)
         log('🔍', `🔍 users`, `🚪 ${name}`, `Ϟ ${socket.id}`)
       })
       .catch(err => {
@@ -92,6 +92,7 @@ export default function room(socket, next) {
     User.find(userId).then(user => {
       socket.rooms.forEach(room => {
         if (!roomRegexKey.test(room)) return
+        log('✗', `✗ ${err}`)
         socket.in(room).emit(`${room}:leave`, user)
       })
     }).catch(err => {
