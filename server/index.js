@@ -9,4 +9,4 @@ app.use(require('./assets'))
 export default app
 
 require('./auth')
-require('./room')
+require('./talks')

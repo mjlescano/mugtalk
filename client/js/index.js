@@ -1,17 +1,17 @@
 import bus from 'bus'
 import React, { render } from 'react'
 import { connect } from './socket'
-import { join, getUsers } from './room'
-import Room from './views/room'
+import { join, getUsers } from './talks'
+import Talk from './views/talk'
 
-const room = 'default'
+const talk = 'default'
 
-bus.on('room:leave', name => { console.log('room:leave', name) })
-bus.on('room:join', name => { console.log('room:join', name) })
-bus.on(`room:${room}:join`, user => { console.log(`room:${room}:join`, user) })
-bus.on(`room:${room}:leave`, user => { console.log(`room:${room}:leave`, user) })
+bus.on('talks:leave', name => { console.log('talks:leave', name) })
+bus.on('talks:join', name => { console.log('talks:join', name) })
+bus.on(`talks:${talk}:join`, user => { console.log(`talks:${talk}:join`, user) })
+bus.on(`talks:${talk}:leave`, user => { console.log(`talks:${talk}:leave`, user) })
 
-join(room).then(getUsers).then(users => {
+join(talk).then(getUsers).then(users => {
   let container = document.querySelector('body')
-  render(<Room name={name} users={users} />, container)
-}).catch(err => console.log(`cannot join ${room}`, err))
+  render(<Talk name={talk} users={users} />, container)
+}).catch(err => console.log(`cannot join ${talk}`, err))

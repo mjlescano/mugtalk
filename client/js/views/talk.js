@@ -8,7 +8,7 @@ class User extends Component {
   }
 }
 
-export default class Room extends Component {
+export default class Talk extends Component {
   constructor (props) {
     super(props);
     this.state = {
@@ -17,9 +17,9 @@ export default class Room extends Component {
   }
 
   componentDidMount () {
-    const room = `room:${this.state.name}`
-    bus.on(`${room}:join`, this.join.bind(this))
-    bus.on(`${room}:leave`, this.leave.bind(this))
+    const talk = `talks:${this.props.name}`
+    bus.on(`${talk}:join`, this.join.bind(this))
+    bus.on(`${talk}:leave`, this.leave.bind(this))
   }
 
   join (user) {
@@ -37,8 +37,8 @@ export default class Room extends Component {
 
   render () {
     return (
-      <div className="room">
-        <h1>Room: {this.props.name}</h1>
+      <div className="talk">
+        <h1>Talk: {this.props.name}</h1>
         {this.state.users.map(user => <User key={user.get('id')} data={user.toJS()} />)}
       </div>
     )
