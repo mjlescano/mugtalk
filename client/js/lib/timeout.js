@@ -4,7 +4,7 @@ export function delay(time) {
   })
 }
 
-export function timeout(promise, time) {
+export default function timeout(promise, time) {
   return Promise.race([promise, delay(time).then(function () {
     throw new Error(`Operation timed out after ${time}ms`);
   })])

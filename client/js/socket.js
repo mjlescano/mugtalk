@@ -1,18 +1,29 @@
 import io from 'socket.io-client'
+import timeout from './lib/timeout'
 import User from './user'
 
-function connect(){
-  if (User.get()){
-    return singin()
-  } else {
-    return signup().then(singin)
-  }
+export function request(url, ...data){
+  return timeout(new Promise((accept, reject) => {
+    connect().then(socket => {
+      socket.once(url, accept)
+      socket.emit(url, ...data)
+    }).catch(reject)
+  }), 5000).catch(err => {
+    console.error(err, url, ...data)
+    throw err
+  })
 }
 
-export default connect()
+export function connect(){
+  return signup().then(singin)
+}
 
+let _socket, _signingPromise
 function singin (){
-  return new Promise((accept, reject) => {
+  if (_socket) return Promise.resolve(_socket)
+  if (_signingPromise) return _signingPromise
+
+  _signingPromise = new Promise((accept, reject) => {
     const socket = io(undefined, {
       reconnection: false,
       query: `token=${localStorage.getItem('token')}`
@@ -20,28 +31,30 @@ function singin (){
 
     debug(socket)
 
-    window.onbeforeunload = function (){
-      socket.disconnect()
-    }
-
     socket.on('connect', onConnect)
-    socket.on('connect_error', onError)
+    socket.on('disconnect', onDisconnect)
 
     function onConnect(){
       socket.off('connect', onConnect)
-      socket.off('connect_error', onError)
+      socket.off('disconnect', onDisconnect)
+      window.onbeforeunload = () => { socket.disconnect() }
+      _socket = socket
       accept(socket)
     }
 
-    function onError(err){
+    function onDisconnect(err){
       socket.off('connect', onConnect)
-      socket.off('connect_error', onError)
+      socket.off('disconnect', onDisconnect)
       reject(err)
     }
   })
+
+  return _signingPromise
 }
 
 function signup (){
+  if (User.get()) return Promise.resolve(User.get())
+
   return fetch('/signup', {
     method: 'post',
     headers: { 'Accept': 'application/json' }
@@ -49,9 +62,7 @@ function signup (){
     User.set(data.user)
     localStorage.setItem('token', data.token)
     return data
-  }).catch(err => {
-    throw err
-  })
+  }).catch(err => { throw err })
 }
 
 function checkStatus(res){
@@ -72,29 +83,10 @@ function debug(socket) {
   window.socket = socket
 
   socket.on('connect', function (){
-    console.log('+ ', socket.id)
+    console.info('+ ', socket.id)
   })
-
-  socket.on('connect_error', console.error.bind(console))
 
   socket.on('disconnect', function (){
-    console.log('- ', socket.id)
-  })
-
-  socket.on('error', function (){
-    console.error(socket.id, arguments)
-  })
-
-  socket.on('unauthorized', function (err){
-    console.log('✗ ', User.get().id)
-  })
-
-  socket.on('authenticated', function (){
-    console.log('✓ ', User.get().id)
-  })
-
-  socket.on('message', function (msg){
-    console.log('-> ', msg)
+    console.info('- ', socket.id)
   })
 }
-

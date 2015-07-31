@@ -36,7 +36,7 @@ export default {
       client.hgetall(`user:${userId}`, (err, user) => {
         if (err) return reject(err)
         if (Array.isArray(user)) {
-          if (!user.length) return accept(null)
+          if (!user.length) return reject(new Error(`User ${userId} not found`))
           user = toHash(user)
         }
         accept(user)
@@ -45,23 +45,35 @@ export default {
   },
 
   addSocket (userId, socketId) {
-    client.multi()
-      .set(`socket:${socketId}:user`, userId)
-      .sadd(`user:${userId}:sockets`, socketId)
-      .exec(err => {
-        if (err) throw err
-        log(`← Ϟ`, `☺ ${userId}`, `Ϟ ${socketId}`)
-      })
+    return new Promise((accept, reject) => {
+      client.multi()
+        .set(`socket:${socketId}:user`, userId)
+        .sadd(`user:${userId}:sockets`, socketId)
+        .exec(err => {
+          if (err) {
+            log(`✗ ← Ϟ`, `☺ ${userId}`, `Ϟ ${socketId}`)
+            reject(err)
+          }
+          log(`← Ϟ`, `☺ ${userId}`, `Ϟ ${socketId}`)
+          accept()
+        })
+    })
   },
 
   removeSocket (userId, socketId) {
-    client.multi()
-      .del(`socket:${socketId}:user`)
-      .srem(`user:${userId}:sockets`, socketId)
-      .exec(err => {
-        if (err) throw err
-        log(`↚ Ϟ`, `☺ ${userId}`, `Ϟ ${socketId}`)
-      })
+    return new Promise((accept, reject) => {
+      client.multi()
+        .del(`socket:${socketId}:user`)
+        .srem(`user:${userId}:sockets`, socketId)
+        .exec(err => {
+          if (err) {
+            log(`✗ ↚ Ϟ`, `☺ ${userId}`, `Ϟ ${socketId}`)
+            reject(err)
+          }
+          log(`↚ Ϟ`, `☺ ${userId}`, `Ϟ ${socketId}`)
+          accept()
+        })
+    })
   },
 
   findBySocket (socketId) {
@@ -69,6 +81,7 @@ export default {
       client.get(`socket:${socketId}:user`, (err, userId) => {
         if (err) return reject(err)
         if (!userId) return reject(new Error('User not found for socket ${socketId}'))
+
         accept({
           id: userId
         })

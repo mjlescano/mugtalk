@@ -1,9 +1,12 @@
 import './debug'
-import { createServer } from 'http'
-import app from './app'
-import io from './io'
+import koa from 'koa.io'
 
-const server = createServer(app.callback())
-io.attach(server, { serveClient: false })
+const app = koa()
 
-export default server
+app.use(require('koa-logger')())
+app.use(require('./assets'))
+
+export default app
+
+require('./auth')
+require('./room')
