@@ -1,5 +1,6 @@
 import bus from 'bus'
-import React, { Component } from 'react'
+import React from 'react'
+import Component from './component'
 import Immutable from 'immutable'
 
 class User extends Component {
@@ -11,15 +12,24 @@ class User extends Component {
 export default class Talk extends Component {
   constructor (props) {
     super(props);
+
     this.state = {
       users: Immutable.fromJS(props.users)
     }
+
+    this.props.talk = `talks:${this.props.name}`
+
+    this._bind('join', 'leave')
   }
 
   componentDidMount () {
-    const talk = `talks:${this.props.name}`
-    bus.on(`${talk}:join`, this.join.bind(this))
-    bus.on(`${talk}:leave`, this.leave.bind(this))
+    bus.on(`${this.props.talk}:join`, this.join)
+    bus.on(`${this.props.talk}:leave`, this.leave)
+  }
+
+  componentWillUnmount () {
+    bus.off(`${this.props.talk}:join`, this.join)
+    bus.off(`${this.props.talk}:leave`, this.leave)
   }
 
   join (user) {
