@@ -11,7 +11,6 @@ const router = new Router()
 router.use(views(resolve(__dirname, '../client'), 'jade'))
 
 router.get('/', function *(){
-  debugger
   log('+', `⌂ ${this.ip}`)
   this.body = yield this.render('index', {
     onDevelopment: onDevelopment

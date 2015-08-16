@@ -8,8 +8,7 @@ export function request(url, ...data){
       socket.once(url, accept)
       socket.emit(url, ...data)
     }).catch(reject)
-  }), 5000).catch(err => {
-    console.error(err, url, ...data)
+  }), 3000).catch(err => {
     throw err
   })
 }
@@ -19,7 +18,7 @@ export function connect(){
 }
 
 let _socket, _signingPromise
-function singin (){
+function singin(){
   if (_socket) return Promise.resolve(_socket)
   if (_signingPromise) return _signingPromise
 
@@ -39,12 +38,15 @@ function singin (){
       socket.off('disconnect', onDisconnect)
       window.onbeforeunload = () => { socket.disconnect() }
       _socket = socket
+      _signingPromise = null
       accept(socket)
     }
 
     function onDisconnect(err){
       socket.off('connect', onConnect)
       socket.off('disconnect', onDisconnect)
+      _socket = null
+      _signingPromise = null
       reject(err)
     }
   })
@@ -80,8 +82,6 @@ function parseJSON(res){
 }
 
 function debug(socket) {
-  window.socket = socket
-
   socket.on('connect', function (){
     console.info('+ ', socket.id)
   })

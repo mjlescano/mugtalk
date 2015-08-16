@@ -1,55 +1,60 @@
-import bus from 'bus'
+import bus from '../bus'
 import React from 'react'
-import Component from './component'
 import Immutable from 'immutable'
-
-class User extends Component {
-  render () {
-    return <p>User: {this.props.data.id}</p>
-  }
-}
+import { sendMessage } from '../talks'
+import Component from './component'
+import UsersList from './users-list'
+import MessageInput from './message-input'
 
 export default class Talk extends Component {
   constructor (props) {
-    super(props);
-
-    this.state = {
-      users: Immutable.fromJS(props.users)
-    }
+    super(props)
 
     this.props.talk = `talks:${this.props.name}`
 
-    this._bind('join', 'leave')
+    this.state = {
+      users: Immutable.fromJS(this.props.users)
+    }
+
+    this._bind('handleUserJoin', 'handleUserLeave', 'sendMessage')
   }
 
   componentDidMount () {
-    bus.on(`${this.props.talk}:join`, this.join)
-    bus.on(`${this.props.talk}:leave`, this.leave)
+    bus.on(`${this.props.talk}:join`, this.handleUserJoin, this)
+    bus.on(`${this.props.talk}:leave`, this.handleUserLeave, this)
+    bus.on(`${this.props.talk}:message`, this.handleUserMessage, this)
   }
 
   componentWillUnmount () {
-    bus.off(`${this.props.talk}:join`, this.join)
-    bus.off(`${this.props.talk}:leave`, this.leave)
+    bus.off(null, null, this)
   }
 
-  join (user) {
+  sendMessage (text) {
+    sendMessage(this.props.name, text)
+  }
+
+  handleUserJoin (user) {
     this.setState({
       users: this.state.users.push(Immutable.fromJS(user))
     })
   }
 
-  leave (user) {
+  handleUserLeave (user) {
     const index = this.state.users.findIndex(u => user.id == u.id)
     this.setState({
       users: this.state.users.delete(index)
     })
   }
 
+  handleUserMessage (userId, message) {
+    console.log(userId, message)
+  }
+
   render () {
     return (
       <div className="talk">
-        <h1>Talk: {this.props.name}</h1>
-        {this.state.users.map(user => <User key={user.get('id')} data={user.toJS()} />)}
+        <UsersList name={this.props.name} users={this.state.users} />
+        <MessageInput onSubmit={this.sendMessage} />
       </div>
     )
   }

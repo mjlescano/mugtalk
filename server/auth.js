@@ -3,7 +3,7 @@ import Router from 'koa-router'
 import json from 'koa-json'
 import jwt from 'jwt-simple'
 import app from './'
-import { User } from './models'
+import User from './user'
 import { jwtSecret, onProduction } from './env'
 
 const log = debug('mugtalk:🔒')
@@ -30,9 +30,12 @@ app.io.use(function* (next) {
 
   try {
     this.decoded_token = jwt.decode(this.query.token, jwtSecret)
+    if (!User.validId(this.decoded_token.id)) {
+      throw new Error('Invalid userId')
+    }
     log('+ decode', `☺ ${this.decoded_token.id}`)
   } catch (err) {
-    log('✗ decode', this.query.token)
+    log('✗ decode', `✗ ${err}`, this.query.token)
     return this.disconnect(err)
   }
 
@@ -48,7 +51,7 @@ app.io.use(function* (next) {
     yield User.find(userId)
   } catch (err) {
     try {
-      yield User.save(this.decoded_token)
+      yield User.create(this.decoded_token)
     } catch (err) {
       return this.disconnect(err)
     }
@@ -64,12 +67,12 @@ app.io.use(function* (next) {
   const userId = this.decoded_token.id
 
   try {
-    yield User.addSocket(userId, socketId)
+    yield User.connect(userId, socketId)
   } catch (err) {
     this.disconnect(err)
   }
 
   yield* next
 
-  User.removeSocket(userId, socketId).catch(() => { })
+  User.disconnect(socketId)
 })

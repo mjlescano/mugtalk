@@ -1,4 +1,3 @@
-import bus from 'bus'
 import React, { render } from 'react'
 import { connect } from './socket'
 import { join, getUsers } from './talks'
