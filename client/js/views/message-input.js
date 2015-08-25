@@ -20,7 +20,7 @@ class Textarea extends Component {
     this._bind('handleChange', 'handleKeyDown')
 
     this.lazySubmit = debounce(this.submit, 80)
-    this.lazyReset = debounce(this.reset, 1500)
+    this.lazyReset = debounce(this.reset, 2000)
   }
 
   reset () {
@@ -54,6 +54,8 @@ class Textarea extends Component {
   }
 
   handleKeyDown (evt) {
+    this.lazyReset()
+
     if (evt.key === 'Enter' && !evt.ctrlKey) {
       evt.preventDefault()
       evt.stopPropagation()
