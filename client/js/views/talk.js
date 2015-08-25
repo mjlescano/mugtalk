@@ -1,22 +1,40 @@
-import bus from '../bus'
+import Map from 'collections/map'
+import SortedMap from 'collections/sorted-map'
 import React from 'react'
-import Immutable from 'immutable'
+import bus from '../bus'
 import { sendMessage } from '../talks'
 import Component from './component'
 import UsersList from './users-list'
+import MessagesList from './messages-list'
 import MessageInput from './message-input'
 
 export default class Talk extends Component {
   constructor (props) {
     super(props)
 
-    this.props.talk = `talks:${this.props.name}`
+    if (!this.props.talk) throw new Error('Need to set talk scope.')
+
+    const users = new Map()
+    if (this.props.users) this.props.users.forEach(u => users.set(u.id, u))
+
+    const messages = new SortedMap(null, (a, b) => {
+      if (a.key) a = a.key
+      if (b.key) b = b.key
+      return a === b
+    }, (a, b) => {
+      return a.createdAt > b.createdAt ? -1 : 1
+    })
 
     this.state = {
-      users: Immutable.fromJS(this.props.users)
+      users: users,
+      messages: messages
     }
 
-    this._bind('handleUserJoin', 'handleUserLeave', 'sendMessage')
+    this._bind(
+      'handleUserJoin',
+      'handleUserLeave',
+      'sendMessage'
+    )
   }
 
   componentDidMount () {
@@ -29,31 +47,40 @@ export default class Talk extends Component {
     bus.off(null, null, this)
   }
 
-  sendMessage (text) {
-    sendMessage(this.props.name, text)
+  sendMessage (message) {
+    sendMessage(this.props.name, message)
   }
 
   handleUserJoin (user) {
-    this.setState({
-      users: this.state.users.push(Immutable.fromJS(user))
-    })
+    if (this.state.users.has(user.id)) return
+    this.state.users.set(user.id, user)
+    this.forceUpdate()
   }
 
   handleUserLeave (user) {
-    const index = this.state.users.findIndex(u => user.id == u.id)
-    this.setState({
-      users: this.state.users.delete(index)
-    })
+    this.state.users.delete(user.id)
+    this.forceUpdate()
   }
 
-  handleUserMessage (userId, message) {
-    console.log(userId, message)
+  handleUserMessage (message) {
+    this.state.messages.set(message.id, message)
+    this.forceUpdate()
+  }
+
+  handleUserMessageDelete (message) {
+    this.state.messages.delete(message.id)
+    this.forceUpdate()
   }
 
   render () {
     return (
       <div className="talk">
-        <UsersList name={this.props.name} users={this.state.users} />
+        <h1>Talk: {this.props.name}</h1>
+        <p>----------</p>
+        <UsersList users={this.state.users} />
+        <p>----------</p>
+        <MessagesList messages={this.state.messages} />
+        <p>----------</p>
         <MessageInput onSubmit={this.sendMessage} />
       </div>
     )

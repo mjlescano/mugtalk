@@ -1,3 +1,4 @@
+import 'babelify/polyfill'
 import React, { render } from 'react'
 import { connect } from './socket'
 import { join, getUsers } from './talks'
@@ -7,7 +8,7 @@ const talk = 'default'
 
 join(talk).then(getUsers).then(users => {
   let container = document.querySelector('body')
-  render(<Talk name={talk} users={users} />, container)
+  render(<Talk name={talk} talk={`talks:${talk}`} users={users} />, container)
 }).catch(err => {
   console.error(err)
   alert(`Cannot join "${talk}", try again later please.`, err)

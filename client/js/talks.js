@@ -8,7 +8,11 @@ export function join(name){
 
   function onUserJoin(user){ bus.trigger(`${talk}:join`, user) }
   function onUserLeave(user){ bus.trigger(`${talk}:leave`, user) }
-  function onUserMessage(userId, message){ bus.trigger(`${talk}:message`, userId, message) }
+
+  function onUserMessage(message){
+    message.createdAt = parseInt(message.createdAt)
+    bus.trigger(`${talk}:message`, message)
+  }
 
   return promise.then(([socket]) => {
     function onLeave(_name) {

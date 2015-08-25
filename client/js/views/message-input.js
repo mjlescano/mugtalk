@@ -1,43 +1,74 @@
+import debounce from 'mout/function/debounce'
+import shortid from 'shortid'
 import React from 'react'
 import Component from './component'
 
+function generateId() {
+  return `${shortid.generate()}-${Date.now()}`
+}
+
 class Textarea extends Component {
-  constructor () {
-    super()
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      id: generateId(),
+      lastValue: '',
+      value: ''
+    }
+
     this._bind('handleChange', 'handleKeyDown')
+
+    this.lazySubmit = debounce(this.submit, 80)
+    this.lazyReset = debounce(this.reset, 1500)
+  }
+
+  reset () {
+    this.lazySubmit.cancel()
+
+    this.setState({
+      id: generateId(),
+      lastValue: '',
+      value: ''
+    })
+  }
+
+  submit () {
+    const value = this.state.value.trim()
+
+    if (!value) return
+    if (value === this.state.lastValue) return
+
+    if (this.props.onSubmit) this.props.onSubmit({
+      id: this.state.id,
+      text: value
+    })
+
+    this.setState({ lastValue: value })
   }
 
   handleChange (evt) {
-    let value = React.findDOMNode(this).value
-    if (this.props.onChange && value !== this.lastValue) {
-      this.props.onChange(value)
+    this.setState({ value: event.target.value })
+    this.lazySubmit()
+    this.lazyReset()
+  }
+
+  handleKeyDown (evt) {
+    if (evt.key === 'Enter' && !evt.ctrlKey) {
+      evt.preventDefault()
+      evt.stopPropagation()
+
+      this.setState({ value: event.target.value })
+      this.submit()
+      this.reset()
     }
-    this.lastValue = value
-  }
-
-  handleKeyDown (e) {
-    if (e.key === 'Enter') this.handleEnter(e)
-  }
-
-  handleEnter (e) {
-    if (e.ctrlKey) return
-    e.preventDefault()
-    e.stopPropagation()
-
-    let el = React.findDOMNode(this)
-    let value = el.value.trim()
-
-    if (!value) return
-
-    el.value = ''
-    if (this.props.onSubmit) this.props.onSubmit(value)
   }
 
   render () {
     return <textarea
-      onInput={this.handleChange}
-      onBlur={this.handleChange}
-      onKeyDown={this.handleKeyDown} />
+      onChange={this.handleChange}
+      onKeyDown={this.handleKeyDown}
+      value={this.state.value} />
   }
 }
 
@@ -47,7 +78,6 @@ export default class MessageInput extends Component {
       <div className="message-input">
         <Textarea
           className="input"
-          onChange={this.props.onChange}
           onSubmit={this.props.onSubmit} />
       </div>
     )

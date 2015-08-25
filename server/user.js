@@ -90,6 +90,18 @@ export default {
     return Promise.resolve(edge.unlink())
   },
 
+  isOnTalk (userId, talkName) {
+    const user = graph.nodes('user').find(userId)
+    if (!user) return Promise.reject(new Error('User not found.'))
+
+    const talk = graph.nodes('talk').find(talkName)
+    if (!talk) return Promise.resolve(false)
+
+    const path = graph.trace(user, talk, 0)
+
+    return Promise.resolve(!!path.length())
+  },
+
   ofTalk (talkName) {
     const talk = graph.nodes('talk').find(talkName)
     if (!talk) return Promise.reject(new Error('Talk not found.'))

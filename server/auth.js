@@ -74,5 +74,5 @@ app.io.use(function* (next) {
 
   yield* next
 
-  User.disconnect(socketId)
+  User.disconnect(socketId).catch(console.error.bind(console))
 })

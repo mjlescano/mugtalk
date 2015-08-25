@@ -1,6 +1,7 @@
 import debug from 'debug'
 import unique from 'mout/array/unique'
 import clone from 'mout/lang/deepClone'
+import shortid from 'shortid'
 import User from './user'
 import app from './'
 
@@ -16,7 +17,10 @@ app.io.use(function* (next) {
   this.talks.forEach(name => {
     const talk = `talks:${name}`
     log('- Ϟ', `☁ ${name}`, `☺ ${this.user.id}`, `Ϟ ${this.id}`)
-    this.broadcast.in(talk).emit(`${talk}:leave`, this.user)
+    User.leave(this.id, name).catch(console.error.bind(console))
+    User.isOnTalk(this.user.id, name).then(isOnTalk => {
+      if (!isOnTalk) app.io.in(talk).emit(`${talk}:leave`, this.user)
+    }).catch(console.error.bind(console))
   })
 })
 
@@ -25,14 +29,15 @@ app.io.route('talks:join', function* (next, name){
   if (isOnTalk('+ Ϟ', this, name)) return
 
   const talk = `talks:${name}`
+  const wasOnTalk = yield User.isOnTalk(this.user.id, name)
 
   this.join(talk, err => {
     if (err) return log('✗ + Ϟ', `✗ ${err}`, `☁ ${name}`, `Ϟ ${this.id}`)
     log('+ Ϟ', `☁ ${name}`, `☺ ${this.user.id}`, `Ϟ ${this.id}`)
     this.talks.push(name)
-    User.join(this.id, name)
+    User.join(this.id, name).catch(console.error.bind(console))
     this.emit('talks:join', name)
-    this.broadcast.in(talk).emit(`${talk}:join`, this.user)
+    if (!wasOnTalk) app.io.in(talk).emit(`${talk}:join`, this.user)
   })
 })
 
@@ -46,9 +51,12 @@ app.io.route('talks:leave', function* (next, name){
     if (err) return log('✗ - Ϟ', `✗ ${err}`, `☁ ${name}`, `Ϟ ${this.id}`)
     log('- Ϟ', `☁ ${name}`, `☺ ${this.user.id}`, `Ϟ ${this.id}`)
     this.talks.splice(this.talks.indexOf(name), 1)
-    User.leave(this.id, name)
+    User.leave(this.id, name).catch(console.error.bind(console))
     this.emit('talks:leave', talk)
-    this.broadcast.in(talk).emit(`${talk}:leave`, this.user)
+
+    User.isOnTalk(this.user.id, name).then(isOnTalk => {
+      if (!isOnTalk) app.io.in(talk).emit(`${talk}:leave`, this.user)
+    }).catch(console.error.bind(console))
   })
 })
 
@@ -69,19 +77,43 @@ app.io.route('talks:users', function* (next, name){
   }
 })
 
-app.io.route('talks:message', function* (next, name, message){
+app.io.route('talks:message', function* (next, name, data){
   if (invalidTalkName('+ ☄', this, name)) return
   if (isNotOnTalk('+ ☄', this, name)) return
-  if ('string' !== typeof message) return
 
-  message = message.trim()
+  if ('object' !== typeof data) {
+    log(`✗ + ☄`, '✗ data is not an object', `data ${data}`, `☁ ${name}`, `Ϟ ${socket.id}`)
+    return
+  }
 
-  if (!message) return
+  if ('string' !== typeof data.text) {
+    log(`✗ + ☄`, '✗ data.text is not a string', `data.text ${data.text}`, `☁ ${name}`, `Ϟ ${socket.id}`)
+    return
+  }
+
+  if (!data.id || 'string' !== typeof data.id || data.id.length > 31) {
+    log(`✗ + ☄`, '✗ data.id is not valid', `data.id ${data.id}`, `☁ ${name}`, `Ϟ ${socket.id}`)
+    return
+  }
+
+  let text = data.text.trim()
+
+  if (!text) {
+    log(`✗ + ☄`, '✗ data.text is only whitesace', `☁ ${name}`, `Ϟ ${socket.id}`)
+    return
+  }
 
   const talk = `talks:${name}`
 
-  this.emit(`talks:message`)
-  this.broadcast.in(talk).emit(`${talk}:message`, this.user.id, message)
+  const message = {
+    id: data.id,
+    text: data.text,
+    userId: this.user.id,
+    createdAt: Date.now()
+  }
+
+  this.emit('talks:message')
+  app.io.in(talk).emit(`${talk}:message`, message)
 
   log('+ ☄', `☁ ${name}`, `Ϟ ${this.id}`)
 })
