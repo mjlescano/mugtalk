@@ -50,6 +50,6 @@
     "watchify": "^3.3.0"
   },
   "devDependencies": {
-    "koa-polyfill-service": "^0.1.0",
+    "koa-polyfill-service": "^0.1.0"
   }
 }
