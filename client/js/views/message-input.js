@@ -48,7 +48,7 @@ class Textarea extends Component {
   }
 
   handleChange (evt) {
-    this.setState({ value: event.target.value })
+    this.setState({ value: evt.target.value })
     this.lazySubmit()
     this.lazyReset()
   }
@@ -60,7 +60,7 @@ class Textarea extends Component {
       evt.preventDefault()
       evt.stopPropagation()
 
-      this.setState({ value: event.target.value })
+      this.setState({ value: evt.target.value })
       this.submit()
       this.reset()
     }
