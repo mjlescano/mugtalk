@@ -1,7 +1,11 @@
 import compose from 'koa-compose'
+import { onDevelopment } from '../env'
 
-export default compose([
+const libs = [
   require('./styles'),
-  require('./js'),
-  require('./polyfill')
-])
+  require('./js')
+]
+
+if (onDevelopment) libs.push(require('./polyfill'))
+
+export default compose(libs)

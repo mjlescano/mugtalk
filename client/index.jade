@@ -6,5 +6,8 @@ html
     meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1')
 
   body.loading
-    script(src='/polyfill.js')
+    if onDevelopment
+      script(src='/polyfill.js')
+    else
+      script(src='https://cdn.polyfill.io/v1/polyfill.min.js?features=fetch')
     script(src='/app.js', async)
