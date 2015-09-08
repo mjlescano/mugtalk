@@ -18,7 +18,8 @@ export default {
 
   create (profile = {}) {
     const user = {
-      id: shortid.isValid(profile.id) ? profile.id : shortid.generate()
+      id: shortid.isValid(profile.id) ? profile.id : shortid.generate(),
+      name: ''
     }
 
     graph.createNode('user', user)

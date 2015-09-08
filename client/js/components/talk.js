@@ -74,7 +74,7 @@ export default class Talk extends Component {
 
   render () {
     return (
-      <div className="talk">
+      <div className='talk'>
         <h1>Talk: {this.props.name}</h1>
         <p>----------</p>
         <UsersList users={this.state.users} />

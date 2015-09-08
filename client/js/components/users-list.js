@@ -10,7 +10,7 @@ class User extends Component {
 export default class UsersList extends Component {
   render () {
     return (
-      <div className="users-list">
+      <div className='users-list'>
         {Array.from(this.props.users.values()).map(user => {
           return <User key={user.id} user={user} />
         })}

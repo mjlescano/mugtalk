@@ -14,7 +14,7 @@ let bundle = browserify({
   debug: onDevelopment,
   entries: [src],
   outfile: dest,
-  fullPaths: true
+  fullPaths: onDevelopment
 }).transform('babelify')
 
 if (onProduction) bundle.transform({ global: true }, 'uglifyify')

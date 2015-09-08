@@ -12,7 +12,7 @@ class Message extends Component {
 export default class MessagesList extends Component {
   render () {
     return (
-      <div className="messages-list">
+      <div className='messages-list'>
         {Array.from(this.props.messages.values()).map(message => {
           return (
             <Message

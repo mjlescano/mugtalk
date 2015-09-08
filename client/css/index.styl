@@ -1,5 +1,6 @@
 @require 'lib/dev-tools'
 @require 'lib/mini-reset'
+@require 'lib/animations'
 @require 'fonts'
 
 beige = #F0EFED
@@ -10,12 +11,21 @@ rojo = #C9806F
 rojoOscuro = #972D15
 
 ::selection
-  background: rojo
+  background: rgba(rojo, .8)
 
 *
   box-sizing: border-box
 
 body
   font-family: Tehuti, serif
-  color: #353535
+  color: negro
   background-color: beige
+  // &:before
+  //   dev-tools-guide-v()
+  //   left 38.19vw
+
+.mugtalk
+  @media (min-width: 768px)
+    padding-right: 38.19vw
+
+@require 'components/*'

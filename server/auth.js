@@ -1,6 +1,7 @@
 import debug from 'debug'
 import Router from 'koa-router'
 import json from 'koa-json'
+import koaBody from 'koa-body'
 import jwt from 'jwt-simple'
 import app from './'
 import User from './user'
@@ -8,14 +9,20 @@ import { jwtSecret, onProduction } from './env'
 
 const log = debug('mugtalk:🔒')
 const router = new Router()
+const parseBody = koaBody()
 const respondJson = json({ pretty: !onProduction })
 
-router.post('/signup', respondJson, function *(){
-  const user = yield User.create()
+router.post('/signup', parseBody, respondJson, function *(){
+  try {
+    const user = yield User.create(this.request.body.profile)
 
-  this.body = {
-    user: user,
-    token: jwt.encode(user, jwtSecret)
+    this.body = {
+      user: user,
+      token: jwt.encode(user, jwtSecret)
+    }
+  } catch (err) {
+    err.status = 400
+    throw err
   }
 })
 

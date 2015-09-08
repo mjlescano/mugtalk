@@ -77,9 +77,9 @@ class Textarea extends Component {
 export default class MessageInput extends Component {
   render () {
     return (
-      <div className="message-input">
+      <div className='message-input'>
         <Textarea
-          className="input"
+          className='input'
           onSubmit={this.props.onSubmit} />
       </div>
     )

@@ -28,8 +28,6 @@ function singin(){
       query: `token=${localStorage.getItem('token')}`
     })
 
-    debug(socket)
-
     socket.on('connect', onConnect)
     socket.on('disconnect', onDisconnect)
 
@@ -54,12 +52,16 @@ function singin(){
   return _signingPromise
 }
 
-function signup (){
+function signup(profile){
   if (User.get()) return Promise.resolve(User.get())
 
   return fetch('/signup', {
     method: 'post',
-    headers: { 'Accept': 'application/json' }
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ profile: profile })
   }).then(checkStatus).then(parseJSON).then(data => {
     User.set(data.user)
     localStorage.setItem('token', data.token)
@@ -79,14 +81,4 @@ function checkStatus(res){
 
 function parseJSON(res){
   return res.json()
-}
-
-function debug(socket) {
-  socket.on('connect', function (){
-    console.info('+ ', socket.id)
-  })
-
-  socket.on('disconnect', function (){
-    console.info('- ', socket.id)
-  })
 }
