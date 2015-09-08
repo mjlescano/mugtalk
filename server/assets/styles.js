@@ -21,7 +21,7 @@ router.get(`/${dest}`, function *(){
 
 function parseStylus(str, filename) {
   return new Promise(function(accept, reject){
-    let parsed = stylus(str).set('filename', filename).use(nib)
+    let parsed = stylus(str).set('filename', filename).use(nib())
 
     if (onProduction) parsed.set('compress', true)
     if (onDevelopment) parsed.set('sourcemap', { inline: true })

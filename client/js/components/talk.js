@@ -76,11 +76,8 @@ export default class Talk extends Component {
     return (
       <div className='talk'>
         <h1>Talk: {this.props.name}</h1>
-        <p>----------</p>
         <UsersList users={this.state.users} />
-        <p>----------</p>
         <MessagesList messages={this.state.messages} />
-        <p>----------</p>
         <MessageInput onSubmit={this.sendMessage} />
       </div>
     )

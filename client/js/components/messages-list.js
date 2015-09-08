@@ -10,6 +10,18 @@ class Message extends Component {
 }
 
 export default class MessagesList extends Component {
+  componentWillUpdate () {
+    var node = React.findDOMNode(this)
+    this.shouldScrollBottom = node.scrollTop + node.offsetHeight === node.scrollHeight
+  }
+
+  componentDidUpdate () {
+    if (this.shouldScrollBottom) {
+      var node = React.findDOMNode(this)
+      node.scrollTop = node.scrollHeight
+    }
+  }
+
   render () {
     return (
       <div className='messages-list'>
