@@ -29,6 +29,7 @@
     "broccoli": "^0.16.8",
     "broccoli-asset-rev": "^2.2.0",
     "broccoli-autoprefixer": "^4.0.0",
+    "broccoli-cli": "^1.0.0",
     "broccoli-fast-browserify": "^0.2.10",
     "broccoli-funnel": "^0.2.8",
     "broccoli-gzip": "^0.2.1",
@@ -59,7 +60,6 @@
   },
   "devDependencies": {
     "koa-broccoli": "cmmartin/koa-broccoli#patch-1",
-    "koa-polyfill-service": "^0.1.0",
-    "broccoli-cli": "^1.0.0"
+    "koa-polyfill-service": "^0.1.0"
   }
 }
