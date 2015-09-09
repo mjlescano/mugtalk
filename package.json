@@ -8,7 +8,8 @@
     "start": "node --harmony index.js",
     "serve": "nodemon -q -w server --harmony",
     "build": "rm -rf build && broccoli build build",
-    "build-ug": "babel ./node_modules/ug  -d ./server/ug"
+    "build-ug": "babel ./node_modules/ug  -d ./server/ug",
+    "postinstall": "npm run build"
   },
   "repository": {
     "type": "git",
