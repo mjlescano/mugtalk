@@ -114,8 +114,6 @@ app.io.route('talks:message', function* (next, name, data){
 
   this.emit('talks:message')
   app.io.in(talk).emit(`${talk}:message`, message)
-
-  log('+ ☄', `☁ ${name}`, `Ϟ ${this.id}`)
 })
 
 function invalidTalkName(scope, socket, name){
