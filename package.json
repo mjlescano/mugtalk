@@ -33,6 +33,7 @@
     "broccoli-fast-browserify": "^0.2.10",
     "broccoli-funnel": "^0.2.8",
     "broccoli-gzip": "^0.2.1",
+    "broccoli-jade": "^1.0.1",
     "broccoli-merge-trees": "^0.2.3",
     "broccoli-stylus-single": "^0.4.1",
     "broccoli-uglify-js": "^0.1.3",
