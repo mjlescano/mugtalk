@@ -5,5 +5,8 @@
   "main": "index.js",
   "repository": "git@github.com:mjlescano/mugtalk.git",
   "author": "Matías Lescano <mjlescano@protonmail.com>",
-  "license": "GPL-v3"
+  "license": "GPL-v3",
+  "dependencies": {
+    "next": "^1.2.3"
+  }
 }
