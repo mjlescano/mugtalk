@@ -1,5 +1,8 @@
 import React from 'react'
+import Layout from '../components/Layout'
 
-export default () => (
-  <div>Welcome to next.js!</div>
+export default (props) => (
+  <Layout>
+    <h1>Mugtalk</h1>
+  </Layout>
 )
