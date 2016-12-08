@@ -8,5 +8,10 @@
   "license": "GPL-v3",
   "dependencies": {
     "next": "^1.2.3"
+  },
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
   }
 }
