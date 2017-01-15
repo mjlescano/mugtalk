@@ -1,10 +1,12 @@
 FROM node:7-slim
 
+LABEL name=mugtalk
+
 MAINTAINER Matías Lescano <mjlescano@protonmail.com>
 
 RUN npm install -g --progress=false yarn
 
-COPY ["package.json", "/usr/src/"]
+COPY ["package.json", "yarn.lock", ".yarnclean", "/usr/src/"]
 
 WORKDIR /usr/src
 
