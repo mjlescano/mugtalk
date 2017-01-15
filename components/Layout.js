@@ -15,7 +15,7 @@ export default class Layout extends React.Component {
         <div>
           <Head>
             <title>MugTalk.</title>
-            <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+            <meta name='viewport' content='initial-scale=1.0, width=device-width' />
           </Head>
           <h1>Mugtalk</h1>
           { this.props.children }

@@ -1,14 +1,22 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import MessageFrom from './MessageForm'
+import talk from '../store/talk'
 
-export const Talk = ({ talk, peers, me }) => {
-  if (!talk) return null
+export function Talk (props) {
+  const {
+    me,
+    peers,
+    messages
+  } = props
+
+  if (!props.talk) return null
 
   return (
     <div>
-      <p>Room: <strong>{ talk }</strong></p>
-      <p>Me: <strong>{ me.id }</strong></p>
-      <p>Peers:</p>
+      <p>Room: <strong>{props.talk}</strong></p>
+      <p>Me: <strong>{me.id}</strong></p>
+      {peers.length > 0 && <p>Peers:</p>}
       {peers.length > 0 && (
         <ul>
           {peers.map((peer) => (
@@ -16,12 +24,24 @@ export const Talk = ({ talk, peers, me }) => {
           ))}
         </ul>
       )}
+      <MessageFrom onSubmit={talk.say} />
+      {messages.length > 0 && (
+        <div className='messages'>
+          {messages.map((m) => (
+            <div key={m.id}>
+              <p><strong>{m.author}:</strong></p>
+              <p>{m.text}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
 
 export default connect((state) => ({
   talk: state.talk,
+  me: state.me,
   peers: state.peers,
-  me: state.me
+  messages: state.messages
 }))(Talk)

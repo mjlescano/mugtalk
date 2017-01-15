@@ -31,9 +31,9 @@ export class Talk {
   }
 
   disconnect () {
-    this.swarm.off('close', this.handleSwarmDisconnect)
-    this.swarm.off('connect', this.handlePeerConnect)
-    this.swarm.off('disconnect', this.handlePeerDisconnect)
+    this.swarm.removeListener('close', this.handleSwarmDisconnect)
+    this.swarm.removeListener('connect', this.handlePeerConnect)
+    this.swarm.removeListener('disconnect', this.handlePeerDisconnect)
 
     this.swarm.close()
 
@@ -50,7 +50,7 @@ export class Talk {
   }
 
   handlePeerDisconnect = (peer, id) => {
-    peer.off('data', this.handlePeerData)
+    peer.removeListener('data', this.handlePeerData)
 
     this.store.dispatch({ type: 'PEER_DISCONNECT', id })
   }
@@ -59,8 +59,15 @@ export class Talk {
     debugger
   }
 
-  say = ({ peer, id, text }) => {
-    this.store.dispatch({ type: 'SAY', id, text, peer })
+  say = (message) => {
+    const action = {
+      type: 'SAY',
+      message: Object.assign({
+        author: this.swarm.me
+      }, message)
+    }
+
+    this.store.dispatch(action)
   }
 
   handleSwarmDisconnect = () => {

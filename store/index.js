@@ -7,24 +7,20 @@ let store = null
 const defaultState = {
   talk: null,
   me: null,
-  peers: []
+  peers: [],
+  messages: []
 }
 
 const reducers = {
   CONNECT (state, action) {
     return Object.assign({}, state, {
       talk: action.talk,
-      me: action.me,
-      peers: []
+      me: action.me
     })
   },
 
   DISCONNECT (state, action) {
-    return Object.assign({}, state, {
-      talk: null,
-      me: null,
-      peers: []
-    })
+    return Object.assign({}, state, defaultState)
   },
 
   PEER_CONNECT (state, action) {
@@ -45,8 +41,18 @@ const reducers = {
     return newState
   },
 
-  SAY (state, action) {
+  SAY (state, { message }) {
     const newState = Object.assign({}, state)
+
+    const currentIndex = newState.messages.findIndex((m) => m.id === message.id)
+
+    newState.messages = newState.messages.slice()
+
+    if (currentIndex !== -1) {
+      newState.messages[currentIndex] = message
+    } else {
+      newState.messages.push(message)
+    }
 
     return newState
   }
