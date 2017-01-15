@@ -56,7 +56,12 @@ export class Talk {
   }
 
   handlePeerData = (data) => {
-    debugger
+    try {
+      const action = JSON.parse(data)
+      this.store.dispatch(action)
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   say = (message) => {
@@ -66,6 +71,10 @@ export class Talk {
         author: this.swarm.me
       }, message)
     }
+
+    const data = JSON.stringify(action)
+
+    this.swarm.peers.forEach((peer) => peer.send(data))
 
     this.store.dispatch(action)
   }

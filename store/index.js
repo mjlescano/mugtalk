@@ -51,7 +51,7 @@ const reducers = {
     if (currentIndex !== -1) {
       newState.messages[currentIndex] = message
     } else {
-      newState.messages.push(message)
+      newState.messages.unshift(message)
     }
 
     return newState
