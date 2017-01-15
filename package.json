@@ -29,5 +29,9 @@
     "eslint-plugin-promise": "~3.4.0",
     "eslint-plugin-react": "~6.9.0",
     "eslint-plugin-standard": "~2.0.1"
+  },
+  "engines": {
+    "node": "7.x.x",
+    "yarn": "0.17.x"
   }
 }
