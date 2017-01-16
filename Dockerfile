@@ -1,10 +1,10 @@
 FROM node:7-slim
 
-LABEL name=mugtalk
+LABEL name="mugtalk"
 
 MAINTAINER Matías Lescano <mjlescano@protonmail.com>
 
-RUN npm install -g --progress=false yarn
+RUN npm set progress=false && npm install -g yarn
 
 COPY ["package.json", "yarn.lock", ".yarnclean", "/usr/src/"]
 
