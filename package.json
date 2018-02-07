@@ -8,7 +8,7 @@
   "dependencies": {
     "glob": "~7.1.1",
     "lodash.debounce": "~4.0.8",
-    "next": "~3.0.2",
+    "next": "~4.2.3",
     "react": "~15.4.2",
     "react-redux": "~5.0.2",
     "redux": "~3.6.0",
