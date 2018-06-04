@@ -1,3 +1,4 @@
 .DS_STORE
 /.next
+/out
 node_modules
