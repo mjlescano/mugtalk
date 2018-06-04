@@ -1,5 +1,5 @@
 export class Talk {
-  static hub = ['https://signalhub.mafintosh.com']
+  static hub = ['https://signalhub-jccqtwhdwc.now.sh']
 
   swarm = null
   store = null
