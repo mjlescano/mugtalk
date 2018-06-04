@@ -12,6 +12,12 @@ export function Talk (props) {
 
   if (!props.talk) return null
 
+  const swarm = require('webrtc-swarm')
+
+  if (!swarm.WEBRTC_SUPPORT) {
+    return <h2>Your device is not supported :(</h2>
+  }
+
   return (
     <div>
       <p>Room: <strong>{props.talk}</strong></p>
