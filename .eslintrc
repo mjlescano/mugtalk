@@ -1,0 +1,28 @@
+{
+  "parser": "babel-eslint",
+  "plugins": ["prettier"],
+  "extends": [
+    "plugin:react/recommended",
+    "eslint:recommended",
+    "plugin:prettier/recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
+  },
+  "env": {
+    "es6": true,
+    "node": true,
+    "browser": true
+  },
+  "rules": {
+    "prettier/prettier": "error",
+    "semi": ["error", "never"],
+    "semi-style": ["error", "first"],
+    "react/prop-types": 0,
+    "react-native/no-inline-styles": 0,
+    "react-native/no-color-literals": 0,
+    "react/react-in-jsx-scope": 0,
+    "react/display-name": 0
+  }
+}
