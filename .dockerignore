@@ -1,8 +1,0 @@
-.dockerignore
-.DS_Store
-.eslintrc
-.git
-.gitignore
-.next
-/README.md
-node_modules
