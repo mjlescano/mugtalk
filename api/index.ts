@@ -1,9 +1,9 @@
-import path from 'path'
-import { Deepstream } from '@deepstream/server'
-// const { Deepstream } = require('@deepstream/server')
+import createApp from './app'
 
-const server = new Deepstream(path.join(__dirname, 'config.yml'))
+export default (async () => {
+  const { client } = await createApp()
 
-server.start()
-
-export default server
+  client.presence.subscribe((user, isOnline) => {
+    console.log({ user, isOnline })
+  })
+})()
