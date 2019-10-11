@@ -1,11 +1,6 @@
-import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import useClient, { CONNECTION_STATE } from '../../hooks/use-client'
 import useTalk from '../../hooks/use-talk'
-
-const CurrentUser = dynamic(() => import('../../components/current-user'), {
-  ssr: false
-})
 
 const getClientStateTitle = (clientState: CONNECTION_STATE) => {
   switch (clientState) {
@@ -22,12 +17,9 @@ const getClientStateTitle = (clientState: CONNECTION_STATE) => {
   }
 }
 
-const Page = ({ guid }) => {
-  const { clientState, currentUser } = useClient()
-  const { users } = useTalk(guid)
-  // if (this.state.recordReady === false) {
-  //   return <div>Loading conversations...</div>
-  // }
+const Page = ({ talkId }) => {
+  const { clientState } = useClient()
+  const { users } = useTalk(talkId)
 
   return (
     <>
@@ -40,7 +32,7 @@ const Page = ({ guid }) => {
       </div>
       <br />
       <div>
-        <strong>Talk:</strong> {guid}
+        <strong>Talk:</strong> {talkId}
       </div>
       <div>
         <strong>Status:</strong> {getClientStateTitle(clientState)}
@@ -50,8 +42,8 @@ const Page = ({ guid }) => {
         <strong>Users:</strong>
       </div>
       <ul>
-        {Object.values(users).map(({ username }) => (
-          <li key={username}>{username}</li>
+        {Object.values(users).map(({ id }) => (
+          <li key={id}>{id}</li>
         ))}
       </ul>
     </>
@@ -59,7 +51,7 @@ const Page = ({ guid }) => {
 }
 
 Page.getInitialProps = ({ query }) => {
-  return { guid: query.guid }
+  return { talkId: query.talkId }
 }
 
 export default Page

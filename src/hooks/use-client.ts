@@ -11,7 +11,7 @@ export type CONNECTION_STATE =
   | 'ERROR'
 
 export interface User {
-  username: string
+  id: string
 }
 
 const getCurrentUser = () => {
@@ -19,7 +19,7 @@ const getCurrentUser = () => {
   const currentUser = store.get('currentUser')
 
   if (!currentUser) {
-    const newUser = { username: client.getUid() }
+    const newUser = { id: client.getUid() }
     store.set('currentUser', newUser)
     return newUser
   }
@@ -74,7 +74,7 @@ const useClient = (): {
   }
 
   if (clientState === 'INITIALIZING') {
-    client.login({ username: currentUser.username })
+    client.login({ id: currentUser.id })
   }
 
   useEffect(() => {
