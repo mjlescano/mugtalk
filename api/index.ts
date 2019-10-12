@@ -3,8 +3,9 @@ import createApp from './app'
 export default (async () => {
   const { client } = await createApp()
 
+  // User presence on talks
   client.record.listen(
-    'talk/[a-zA-Z0-9-_]+/user/[a-zA-Z0-9-_]+',
+    'talk/[a-zA-Z0-9-_]+/presence/[a-zA-Z0-9-_]+',
     (subject, response) => {
       response.accept()
       const [, talkId, , username] = subject.split('/')

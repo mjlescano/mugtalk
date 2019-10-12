@@ -1,43 +1,60 @@
 import { useState, useEffect } from 'react'
-import useClient, { User } from './use-client'
+import { Client as DeepstreamClient } from '@deepstream/client'
+import { User } from './use-client'
 
 interface UserMap {
   [username: string]: User
 }
 
-const useTalk = (talkId) => {
-  const { client, currentUser, isOnline } = useClient()
+const useTalk = ({
+  talkId,
+  client,
+  isOnline,
+  currentUser
+}: {
+  talkId: string
+  client: DeepstreamClient
+  isOnline: boolean
+  currentUser: User
+}) => {
   const [users, setUsers] = useState<UserMap>({})
+  const [talkReady, setTalkReady] = useState<boolean>(false)
 
   useEffect(() => {
-    if (isOnline) {
-      let talk
-      const presence = client.record.getRecord(
-        `talk/${talkId}/user/${currentUser.username}`
-      )
+    if (isOnline === false) return
 
-      presence.on('error', (err) => {
-        console.error(`talk/${talkId}/user/${currentUser.username}`, err)
-      })
+    let talk
+    const presence = client.record.getRecord(
+      `talk/${talkId}/presence/${currentUser.username}`
+    )
 
-      presence.whenReady(() => {
+    presence.on('error', (err) => {
+      console.error(`talk/${talkId}/presence/${currentUser.username}`, err)
+    })
+
+    presence.whenReady(() => {
+      setTimeout(() => {
         talk = client.record.getRecord(`talk/${talkId}`)
 
         talk.on('error', (err) => {
           console.error(`talk/${talkId}`, err)
         })
 
-        talk.subscribe('users', (users = {}) => setUsers(users), true)
-      })
+        talk.whenReady(() => {
+          talk.subscribe('users', (users = {}) => setUsers(users), true)
+          setTalkReady(true)
+        })
+      }, 500)
+    })
 
-      return () => {
-        presence.discard()
-        if (talk) talk.discard()
-      }
+    return () => {
+      presence.discard()
+      if (talk) talk.discard()
+      setTalkReady(false)
     }
   }, [isOnline])
 
-  return { users }
+  return { users, talkReady }
 }
 
 export default useTalk

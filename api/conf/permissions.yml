@@ -11,7 +11,7 @@ record:
     listen: false
     notify: false
 
-  'talk/$talkId/user/$username':
+  'talk/$talkId/presence/$username':
     create: 'user.id == $username'
     write: false
     read: 'user.id == $username'
@@ -30,6 +30,10 @@ event:
     publish: false
     subscribe: false
     listen: false
+
+  'talk/$talkId/message':
+    publish: 'data.u == user.id && typeof data.t == "number" && typeof data.m == "string"'
+    subscribe: '!!_("talk/" + $talkId).users[user.id]'
 
 rpc:
   '*':
