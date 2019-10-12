@@ -6,7 +6,7 @@ import waitForEvent from './lib/wait-for-event'
 import config from '../config'
 
 export default async () => {
-  const server = new Deepstream(path.join(__dirname, 'config.yml'))
+  const server = new Deepstream(path.join(__dirname, 'conf', 'config.yml'))
   const client: DeepstreamClient = deepstream(config.get('API_URL'))
 
   server.start()

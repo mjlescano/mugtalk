@@ -1,0 +1,37 @@
+presence:
+  '*':
+    allow: false
+
+record:
+  '*':
+    create: false
+    write: false
+    read: false
+    delete: false
+    listen: false
+    notify: false
+
+  'talk/$talkId/user/$username':
+    create: 'user.id == $username'
+    write: false
+    read: 'user.id == $username'
+    delete: false
+    listen: 'user.id === "api"'
+
+  'talk/$talkId':
+    create: 'user.id === "api"'
+    write: 'user.id === "api"'
+    read: 'user.id === "api" || !!_("talk/" + $talkId).users[user.id]'
+    delete: 'user.id === "api"'
+    listen: '!!_("talk/" + $talkId).users[user.id]'
+
+event:
+  '*':
+    publish: false
+    subscribe: false
+    listen: false
+
+rpc:
+  '*':
+    provide: false
+    request: false

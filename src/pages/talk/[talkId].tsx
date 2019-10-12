@@ -21,6 +21,8 @@ const Page = ({ talkId }) => {
   const { clientState } = useClient()
   const { users } = useTalk(talkId)
 
+  const usersValues = Object.values(users)
+
   return (
     <>
       <div>
@@ -38,14 +40,18 @@ const Page = ({ talkId }) => {
         <strong>Status:</strong> {getClientStateTitle(clientState)}
       </div>
       <br />
-      <div>
-        <strong>Users:</strong>
-      </div>
-      <ul>
-        {Object.values(users).map(({ id }) => (
-          <li key={id}>{id}</li>
-        ))}
-      </ul>
+      {usersValues.length > 0 && (
+        <>
+          <div>
+            <strong>Users:</strong>
+          </div>
+          <ul>
+            {usersValues.map(({ username }) => (
+              <li key={username}>{username}</li>
+            ))}
+          </ul>
+        </>
+      )}
     </>
   )
 }

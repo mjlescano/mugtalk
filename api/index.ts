@@ -7,20 +7,23 @@ export default (async () => {
     'talk/[a-zA-Z0-9-_]+/user/[a-zA-Z0-9-_]+',
     (subject, response) => {
       response.accept()
-      const [, talkId, , userId] = subject.split('/')
+      const [, talkId, , username] = subject.split('/')
 
       const talk = client.record.getRecord(`talk/${talkId}`)
 
       talk.whenReady(() => {
-        talk.set(`users.${userId}`, { id: userId })
+        talk.set(`users.${username}`, { username: username })
       })
 
       response.onStop(() => {
         const users = talk.get('users')
-        delete users[userId]
+        delete users[username]
         talk.set('users', users)
         if (Object.keys(users).length === 0) talk.delete()
       })
     }
   )
-})()
+})().catch((err) => {
+  console.error(err)
+  process.exit(1)
+})

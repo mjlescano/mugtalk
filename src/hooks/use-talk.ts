@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import useClient, { User } from './use-client'
 
 interface UserMap {
-  [id: string]: User
+  [username: string]: User
 }
 
 const useTalk = (talkId) => {
@@ -11,24 +11,28 @@ const useTalk = (talkId) => {
 
   useEffect(() => {
     if (isOnline) {
-      const talk = client.record.getRecord(`talk/${talkId}`)
-      const record = client.record.getRecord(
-        `talk/${talkId}/user/${currentUser.id}`
+      let talk
+      const presence = client.record.getRecord(
+        `talk/${talkId}/user/${currentUser.username}`
       )
 
-      talk.on('error', (err) => {
-        console.error(err)
+      presence.on('error', (err) => {
+        console.error(`talk/${talkId}/user/${currentUser.username}`, err)
       })
 
-      record.on('error', (err) => {
-        console.error(err)
-      })
+      presence.whenReady(() => {
+        talk = client.record.getRecord(`talk/${talkId}`)
 
-      talk.subscribe('users', (users = {}) => setUsers(users), true)
+        talk.on('error', (err) => {
+          console.error(`talk/${talkId}`, err)
+        })
+
+        talk.subscribe('users', (users = {}) => setUsers(users), true)
+      })
 
       return () => {
-        talk.discard()
-        record.discard()
+        presence.discard()
+        if (talk) talk.discard()
       }
     }
   }, [isOnline])

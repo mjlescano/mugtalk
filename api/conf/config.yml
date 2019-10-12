@@ -1,0 +1,10 @@
+serverName: UUID
+showLogo: false
+
+auth:
+  type: none
+
+permission:
+  type: config
+  options:
+    path: ./permissions.yml
