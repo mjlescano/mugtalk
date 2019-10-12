@@ -49,7 +49,7 @@ const getConnectionState = (): CONNECTION_STATE => {
 }
 
 const client: DeepstreamClient =
-  typeof window === 'undefined' ? null : deepstream('ws://localhost:6020')
+  typeof window === 'undefined' ? null : deepstream(process.env.API_URL)
 
 const currentUser: User =
   typeof window === 'undefined' ? null : getCurrentUser()

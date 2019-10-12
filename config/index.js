@@ -1,4 +1,4 @@
-import convict from 'convict'
+const convict = require('convict')
 
 const config = convict({
   NODE_ENV: {
@@ -17,4 +17,4 @@ const config = convict({
 
 config.validate({ allowed: 'strict' })
 
-export default config
+module.exports = config

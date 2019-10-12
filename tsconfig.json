@@ -20,6 +20,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "src/pages/talk/[talkId].tsx"
+    "src/pages/talk/[talkId].tsx",
+    "config/index.js"
   ]
 }
