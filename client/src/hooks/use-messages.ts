@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { Client as DeepstreamClient } from '@deepstream/client'
-import useClient from './use-client'
 
 export interface Message {
   /** Username of the author */

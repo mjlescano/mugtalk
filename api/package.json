@@ -1,0 +1,26 @@
+{
+  "name": "mugtalk-api",
+  "private": true,
+  "version": "0.0.0",
+  "author": "Matías Lescano <mjlescano@protonmail.com>",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "@deepstream/client": "4.1.3",
+    "@deepstream/server": "4.2.5"
+  },
+  "scripts": {
+    "dev": "backpack",
+    "build": "backpack build",
+    "start": "node ./build/main.js"
+  },
+  "engines": {
+    "node": "10.16.3",
+    "npm": "6.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "12.7.12",
+    "awesome-typescript-loader": "5.2.1",
+    "backpack-core": "0.8.4",
+    "typescript": "3.6.4"
+  }
+}

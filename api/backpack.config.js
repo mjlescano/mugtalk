@@ -1,6 +1,6 @@
 module.exports = {
   webpack: (config) => {
-    config.entry.main = ['./api/index.ts']
+    config.entry.main = ['./src/index.ts']
 
     config.resolve = {
       extensions: ['.ts', '.js', '.json']

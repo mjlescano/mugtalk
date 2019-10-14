@@ -16,11 +16,5 @@
   },
   "typeRoots": ["./node_modules/deepstream.io-client.js/src/client.d.ts"],
   "exclude": ["node_modules"],
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    "src/pages/talk/[talkId].tsx",
-    "../config/index.js"
-  ]
+  "include": ["./**/*.ts", "../config/index.js"]
 }

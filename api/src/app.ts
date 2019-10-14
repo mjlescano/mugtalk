@@ -3,11 +3,12 @@ import path from 'path'
 import { Deepstream } from '@deepstream/server'
 import { Client as DeepstreamClient } from '@deepstream/client'
 import waitForEvent from './lib/wait-for-event'
-import config from '../config'
+
+const API_URL = process.env.API_URL || 'ws://127.0.0.1:6020'
 
 export default async () => {
   const server = new Deepstream(path.join(__dirname, 'conf', 'config.yml'))
-  const client: DeepstreamClient = deepstream(config.get('API_URL'))
+  const client: DeepstreamClient = deepstream(API_URL)
 
   server.start()
 

@@ -1,6 +1,6 @@
-.DS_STORE
+.DS_Store
 .vscode
-/.next
-/out
-/build
+.next
+out
+build
 node_modules
