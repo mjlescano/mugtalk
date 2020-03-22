@@ -17,6 +17,7 @@
   },
   "rules": {
     "prettier/prettier": "error",
+    "comma-dangle": ["error", "never"],
     "semi": ["error", "never"],
     "semi-style": ["error", "first"],
     "react/prop-types": 0,

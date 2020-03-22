@@ -1,3 +1,5 @@
+const ExtraWatchWebpackPlugin = require('extra-watch-webpack-plugin')
+
 module.exports = {
   webpack: (config) => {
     config.entry.main = ['./src/index.ts']
@@ -10,6 +12,12 @@ module.exports = {
       test: /\.ts$/,
       loader: 'awesome-typescript-loader'
     })
+
+    config.plugins.push(
+      new ExtraWatchWebpackPlugin({
+        files: ['src/conf/*.yml']
+      })
+    )
 
     return config
   }

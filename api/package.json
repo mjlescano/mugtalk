@@ -21,6 +21,7 @@
     "@types/node": "13.9.2",
     "awesome-typescript-loader": "5.2.1",
     "backpack-core": "0.8.4",
+    "extra-watch-webpack-plugin": "1.0.3",
     "typescript": "3.8.3"
   }
 }
