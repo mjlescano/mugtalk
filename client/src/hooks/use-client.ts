@@ -13,8 +13,9 @@ export interface User {
   username: string
 }
 
-const getCurrentUser = () => {
-  if (typeof window === 'undefined') return null
+const API_URL = process.env.API_URL || 'ws://localhost:6020'
+
+function getCurrentUser (client: DeepstreamClient): User {
   const currentUser = store.get('currentUser')
 
   if (!currentUser) {
@@ -26,7 +27,7 @@ const getCurrentUser = () => {
   return currentUser
 }
 
-const getConnectionState = (): CONNECTION_STATE => {
+function getConnectionState (): CONNECTION_STATE {
   if (!client) return 'INITIALIZING'
 
   switch (client.getConnectionState()) {
@@ -47,22 +48,26 @@ const getConnectionState = (): CONNECTION_STATE => {
   }
 }
 
-const client =
-  typeof window === 'undefined' ? null : new DeepstreamClient(process.env.API_URL)
+const onServer = typeof window === 'undefined'
 
-const currentUser: User =
-  typeof window === 'undefined' ? null : getCurrentUser()
+const client = onServer ? null : new DeepstreamClient(API_URL)
 
-if (typeof window !== 'undefined') {
-  globalThis.c = client
+const currentUser = onServer ? null : (client && getCurrentUser(client))
+
+declare global {
+  interface Window { c: DeepstreamClient | null }
 }
 
-const useClient = (): {
+if (typeof window !== 'undefined') {
+  window.c = client
+}
+
+export default function useClient (): {
   clientState: CONNECTION_STATE
   isOnline: boolean
-  currentUser: User
-  client?: DeepstreamClient
-} => {
+  currentUser: User | null
+  client: DeepstreamClient | null
+} {
   const [clientState, setClientState] = useState<CONNECTION_STATE>(
     getConnectionState()
   )
@@ -70,6 +75,10 @@ const useClient = (): {
 
   if (client === null) {
     return { clientState, client, currentUser, isOnline }
+  }
+
+  if (currentUser === null) {
+    throw new Error('Missing currentUser when loading client')
   }
 
   if (clientState === 'INITIALIZING') {
@@ -91,5 +100,3 @@ const useClient = (): {
 
   return { clientState, client, currentUser, isOnline }
 }
-
-export default useClient

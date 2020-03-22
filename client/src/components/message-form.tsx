@@ -1,4 +1,4 @@
-import debounce from 'lodash.debounce'
+import debounce from 'debounce-fn'
 import React from 'react'
 import { Message } from '../hooks/use-messages'
 
@@ -13,28 +13,20 @@ interface StateType {
   lastMessage: string
 }
 
+const createNewState = () => ({
+  timestamp: Date.now(),
+  lastMessage: '',
+  message: ''
+})
+
 export default class MessageForm extends React.Component<PropType, StateType> {
-  lazySubmit: debounce
-  lazyReset: debounce
-
-  constructor(props) {
-    super(props)
-
-    this.state = this.createNewState()
-
-    this.lazySubmit = debounce(this.submit, 80)
-    this.lazyReset = debounce(this.reset, 1600)
-  }
-
-  createNewState = () => ({
-    timestamp: Date.now(),
-    lastMessage: '',
-    message: ''
-  })
+  state = createNewState()
+  lazySubmit = debounce(this.submit, { wait: 80 })
+  lazyReset = debounce(this.reset, { wait: 1600 })
 
   reset() {
     this.lazySubmit.cancel()
-    this.setState(this.createNewState())
+    this.setState(createNewState())
   }
 
   submit() {
@@ -54,20 +46,21 @@ export default class MessageForm extends React.Component<PropType, StateType> {
     this.setState({ lastMessage: text })
   }
 
-  handleChange = (evt) => {
-    this.setState({ message: evt.target.value })
+  handleChange: React.ChangeEventHandler<HTMLTextAreaElement> = (evt) => {
+    this.setState({ message: evt.currentTarget.value })
     this.lazySubmit()
     this.lazyReset()
   }
 
-  handleKeyDown = (evt) => {
+  handleKeyDown: React.KeyboardEventHandler<HTMLTextAreaElement> = (evt) => {
     this.lazyReset()
+
 
     if (evt.key === 'Enter' && !evt.ctrlKey) {
       evt.preventDefault()
       evt.stopPropagation()
 
-      this.setState({ message: evt.target.value })
+      this.setState({ message: evt.currentTarget.value })
       this.submit()
       this.reset()
     }

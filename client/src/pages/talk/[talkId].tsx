@@ -1,4 +1,6 @@
+import React from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import useClient, { CONNECTION_STATE } from '../../hooks/use-client'
 import useTalk from '../../hooks/use-talk'
 import useMessages from '../../hooks/use-messages'
@@ -20,8 +22,28 @@ const getClientStateTitle = (clientState: CONNECTION_STATE) => {
   }
 }
 
-const Page = ({ talkId }) => {
+function getTalkId () {
+  const { talkId } = useRouter().query
+
+  if (talkId === undefined) return null
+
+  if (typeof talkId !== 'string' || !/[A-Za-z0-9_-]+/g.test(talkId)) {
+    throw new Error(`Invalid talkId "${talkId}"`)
+  }
+
+  return talkId
+}
+
+export default function Page () {
+  const talkId = getTalkId()
+
+  if (talkId === null) return null
+
   const { client, isOnline, clientState, currentUser } = useClient()
+
+  if (client === null) return null
+  if (currentUser === null) throw new Error('Missing currentUser')
+
   const { users, talkReady } = useTalk({
     talkId,
     client,
@@ -71,15 +93,9 @@ const Page = ({ talkId }) => {
           </ul>
         </>
       )}
-      {talkReady && (
+      {talkReady && currentUser && (
         <MessageForm username={currentUser.username} onSubmit={submitMessage} />
       )}
     </>
   )
 }
-
-Page.getInitialProps = ({ query }) => {
-  return { talkId: query.talkId }
-}
-
-export default Page

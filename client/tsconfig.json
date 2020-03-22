@@ -2,9 +2,9 @@
   "compilerOptions": {
     "target": "es6",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
+    "allowJs": false,
     "skipLibCheck": true,
-    "strict": false,
+    "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
@@ -14,7 +14,6 @@
     "isolatedModules": true,
     "jsx": "preserve"
   },
-  "typeRoots": ["./node_modules/deepstream.io-client.js/src/client.d.ts"],
   "exclude": ["node_modules"],
   "include": [
     "next-env.d.ts",

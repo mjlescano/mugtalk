@@ -1,6 +1,6 @@
 export default function map<V, T>(
   iterable: Iterable<V>,
-  fn: (V) => T
+  fn: (V: any) => T
 ): Array<T> {
   const values: Array<T> = []
 
