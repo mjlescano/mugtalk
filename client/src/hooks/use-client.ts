@@ -1,5 +1,4 @@
-const deepstream = require('@deepstream/client')
-import { Client as DeepstreamClient } from '@deepstream/client'
+import { DeepstreamClient } from '@deepstream/client'
 import { useState, useEffect } from 'react'
 import store from 'store/dist/store.modern'
 
@@ -48,8 +47,8 @@ const getConnectionState = (): CONNECTION_STATE => {
   }
 }
 
-const client: DeepstreamClient =
-  typeof window === 'undefined' ? null : deepstream(process.env.API_URL)
+const client =
+  typeof window === 'undefined' ? null : new DeepstreamClient(process.env.API_URL)
 
 const currentUser: User =
   typeof window === 'undefined' ? null : getCurrentUser()

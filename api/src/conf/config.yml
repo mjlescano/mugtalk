@@ -1,10 +1,11 @@
 serverName: UUID
 showLogo: false
+exitOnFatalError: true
 
 auth:
   type: none
 
-permission:
-  type: config
-  options:
-    path: ./permissions.yml
+# permission:
+#   type: config
+#   options:
+#     path: ./permissions.yml
